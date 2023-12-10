@@ -32,7 +32,7 @@ class NodeSorting(ast.NodeVisitor):
 
 class Visitor(ast.NodeVisitor):
 
-    from anti_plagiarism.constants import builtin_functions, builtin_methods
+    from constants import builtin_functions, builtin_methods
 
     def __init__(self):
         self.data = []
@@ -61,30 +61,3 @@ class Visitor(ast.NodeVisitor):
 
     def visit_ImportFrom(self, node):
         self.data.append(node.module)
-
-
-if __name__ == "__main__":
-    tree = ast.parse("""
-print(1)
-
-def f(x):
-    for i in range(x):
-        print(i)
-    return x - 1
-
-
-def g(x):
-    return x ** 2 - 4
-
-def h(x, y):
-    return x == y
-
-for i in range(100):
-    ke = f(x, y, z)
-    ke **= 2
-    print(ke)
-""")
-    visitor = Visitor()
-    visitor.generic_visit(tree)
-    node_sort = NodeSorting()
-    node_sort.run(tree)
