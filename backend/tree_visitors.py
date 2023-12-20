@@ -32,17 +32,44 @@ class NodeSorting(ast.NodeVisitor):
 
 class Visitor(ast.NodeVisitor):
 
-    from anti_plagiarism.constants import builtin_functions, builtin_methods
+    from constants import builtin_functions, builtin_methods
 
     def __init__(self):
         self.data = []
+        self.suspect = 0
 
     def generic_visit(self, node):
         self.data.append(node.__class__.__name__)
         super().generic_visit(node)
 
+    def visit_If(self, node):
+        """
+        If statement consist only of constants, we increase
+        suspicion
+        """
+        if isinstance(node.test, ast.Constant):
+            self.suspect += 1
+            return
+        if isinstance(node.test, ast.BoolOp):
+            for value in node.test.values:
+                if value.__class__ != ast.Constant:
+                    break
+            else:
+                self.suspect += 1
+                return
+
+        self.data.append(node.__class__.__name__)
+        super().generic_visit(node)
+
+    def visit_AnnAssign(self, node):
+        self.data.append(ast.Assign.__class__.__name__)
+        super().generic_visit(node)
+
     def visit_Constant(self, node):
-        self.data.append(node.value)
+        if isinstance(node.value, bool):
+            self.data.append(int(node.value))
+        else:
+            self.data.append(node.value)
         super().generic_visit(node)
 
     def visit_Call(self, node):
@@ -64,27 +91,12 @@ class Visitor(ast.NodeVisitor):
 
 
 if __name__ == "__main__":
-    tree = ast.parse("""
-print(1)
-
-def f(x):
-    for i in range(x):
-        print(i)
-    return x - 1
-
-
-def g(x):
-    return x ** 2 - 4
-
-def h(x, y):
-    return x == y
-
-for i in range(100):
-    ke = f(x, y, z)
-    ke **= 2
-    print(ke)
-""")
+    text = '''
+if False or False:
+    print(1)
+    '''
+    tree_ = ast.parse(text)
     visitor = Visitor()
-    visitor.generic_visit(tree)
-    node_sort = NodeSorting()
-    node_sort.run(tree)
+    visitor.visit(tree_)
+    print(visitor.data)
+    print(1)
