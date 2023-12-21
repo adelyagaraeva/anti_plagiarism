@@ -14,12 +14,12 @@ class Model:
 
         return node_visitor.data
 
-    def __init__(self, rep_cost=1, shift=0.05):
-        self.rep_cost = rep_cost
-        self.shift = shift
+    def __init__(self):
+        pass
 
-    def predict(self, code1, code2):
+    @staticmethod
+    def predict(code1, code2, function):
         try:
-            return wagner_fisher(code1, code2, self.shift, self.rep_cost)
+            return wagner_fisher(code1, code2)
         except SyntaxError:
             return 0
