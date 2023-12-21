@@ -32,7 +32,7 @@ class NodeSorting(ast.NodeVisitor):
 
 class Visitor(ast.NodeVisitor):
 
-    from constants import builtin_functions, builtin_methods
+    from backend.constants import builtin_functions, builtin_methods
 
     def __init__(self):
         self.data = []

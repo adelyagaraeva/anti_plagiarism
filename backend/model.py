@@ -1,5 +1,5 @@
-from tree_visitors import *
-from metrics import *
+from backend.tree_visitors import *
+from backend.metrics import *
 
 
 class Model:
@@ -18,8 +18,11 @@ class Model:
         pass
 
     @staticmethod
-    def predict(code1, code2, function):
+    def predict(code1, code2, function, alphabet):
         try:
-            return wagner_fisher(code1, code2)
+            if alphabet:
+                code1 = ''.join(alphabet[el] for el in code1)
+                code2 = ''.join(alphabet[el] for el in code2)
+            return function(code1, code2)
         except SyntaxError:
             return 0
