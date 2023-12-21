@@ -1,5 +1,25 @@
 def check(str, x, m):
     return str[m] > x
+
+
+n, length = map(int, input().split())
+str = []
+for i in range(n):
+    x1, d1, a, c, m = map(int, input().split())
+    x_before = x1
+    str.append(x1)
+    l = d1
+    d_prev = d1
+    ##С: А как зачет будет проходить?
+##П: Ну, как обычно, по-новогоднему: все девочки — снежинки,
+    # мальчики — зайчики, выходите, становитесь на стул и рассказываете стишок. Плохо выучили — зачет не получите.
+    for j in range(1, length):
+        x_before  += d_prev
+        l = d1
+        str.append(x_before)
+        d_prev = (d_prev * a + c) % m
+i = 0
+
 def elem_before(str, x, l,r):
     if x < str[l]:
         return l - 1
@@ -13,22 +33,6 @@ def elem_before(str, x, l,r):
             left = med
     return left
 
-n, length = map(int, input().split())
-str = []
-for i in range(n):
-    x1, d1, a, c, m = map(int, input().split())
-    x_before = x1
-    str.append(x1)
-    l = d1
-    d_prev = d1
-    ##С: А как зачет будет проходить?
-##П: Ну, как обычно, по-новогоднему: все девочки — снежинки, мальчики — зайчики, выходите, становитесь на стул и рассказываете стишок. Плохо выучили — зачет не получите.
-    for j in range(1, length):
-        x_before  += d_prev
-        l = d1
-        str.append(x_before)
-        d_prev = (d_prev * a + c) % m
-i = 0
 while i < n - 1:
     for j in range(i + 1, n):
         left = str[i * length]

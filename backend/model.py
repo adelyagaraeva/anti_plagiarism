@@ -1,5 +1,4 @@
 from backend.tree_visitors import *
-from backend.metrics import *
 
 
 class Model:

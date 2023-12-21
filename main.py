@@ -1,8 +1,9 @@
 import argparse
 import os
-import jellyfish
 from itertools import product
 from backend.model import *
+from backend.metrics import *
+import pandas as pd
 
 
 def read_code(name):
@@ -12,32 +13,38 @@ def read_code(name):
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Antiplagiarism checker')
-    parser.add_argument('input', type=str, help='two programmes or folder name to compare files in it',
-                        nargs='+', metavar='N')
-    parser.add_argument('-l', type=str, help='way of comparison',
+    parser = argparse.ArgumentParser(description='Antiplagiarism checker compare files using different metrics. '
+                                                 'The program is made specifically to find plagiarism in python code, '
+                                                 'but it can also be used with text files in utf-8 encoding')
+
+    parser.add_argument('input', type=str, nargs='+', help='there could be a folder (one path to it) '
+                                                           'or two python files (two paths to each file)')
+
+    parser.add_argument('-l', type=str, help='metrics for comparisons',
                         choices=['lev', 'jaro', 'dam-lev'], nargs=1)
+    parser.add_argument('-pandas', type=str, help='path to folder to save as pandas dataframe '
+                                                  '(recommended for folder comparisons). Optional '
+                                                  'if not specified, result is printed and is not saved',
+                        required=False, nargs=1)
+
     args_ = parser.parse_args()
-    return args_.input, args_.l
+    return args_.input, args_.l, args_.pandas
 
 
-args, compare_type = parse_arguments()
-parse_dir = len(args) == 1
+args, compare_type, pandas_convert = parse_arguments()
 
 if len(args) > 2:
     raise ValueError("More than two arguments in files")
 
-files_to_compare = args if not parse_dir else [args[0] + '/' + file for file in os.listdir(args[0])]
-parse_python = all(file.endswith('.py') for file in files_to_compare)
+parse_dir: bool = len(args) == 1
+files_to_compare = args if not parse_dir else [f'{args[0]}/{file}' for file in os.listdir(args[0])]
+files_pair = [pair for pair in product(files_to_compare, repeat=2) if pair[0] < pair[1]]
+parse_python: bool = all(file.endswith('.py') for file in files_to_compare)
 
 anti_plag = Model()
-compare_pair = [pair for pair in product(files_to_compare, repeat=2) if pair[0] < pair[1]]
 results = {}
-predicting_functions = {'lev': jellyfish.levenshtein_distance,
-                        'dam-lev': jellyfish.damerau_levenshtein_distance,
-                        'jaro': jellyfish.jaro_similarity}
 
-for pair in compare_pair:
+for pair in files_pair:
     if parse_python:
         first = Model.preprocessing(read_code(pair[0]))
         second = Model.preprocessing(read_code(pair[1]))
@@ -50,9 +57,24 @@ for pair in compare_pair:
     result = Model.predict(first, second, predicting_functions[compare_type[0]], alphabet)
     results[(pair[0], pair[1])] = result
 
+
 if not parse_dir:
     for key, value in results.items():
-        print(value)
+        print(f'result for {compare_type} is {value}')
+
 else:
     for key, value in results.items():
         print(key[0].split('/')[-1], key[1].split('/')[-1], value)
+
+    if pandas_convert:
+        first, second = [], []
+        values = []
+
+        for key, value in results.items():
+            first.append(key[0].split('/')[-1])
+            second.append(key[1].split('/')[-1])
+            values.append(value)
+
+        pd.DataFrame({'first': first, 'second': second, f'{compare_type}_metrics': values}).to_csv(
+            f'{pandas_convert[0]}/results.csv', index=False)
+
