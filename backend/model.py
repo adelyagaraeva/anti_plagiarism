@@ -3,6 +3,9 @@ from backend.tree_visitors import *
 
 class Model:
 
+    def __init__(self):
+        pass
+
     @staticmethod
     def preprocessing(code):
         node_visitor = Visitor()
@@ -12,9 +15,6 @@ class Model:
         node_visitor.generic_visit(tree)
 
         return node_visitor.data
-
-    def __init__(self):
-        pass
 
     @staticmethod
     def predict(code1, code2, function, alphabet):

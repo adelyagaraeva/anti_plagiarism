@@ -62,7 +62,8 @@ class Visitor(ast.NodeVisitor):
         super().generic_visit(node)
 
     def visit_AnnAssign(self, node):
-        self.data.append(ast.Assign.__class__.__name__)
+        node.target = []
+        self.data.append(ast.Assign.__name__)
         super().generic_visit(node)
 
     def visit_Constant(self, node):
@@ -88,15 +89,3 @@ class Visitor(ast.NodeVisitor):
 
     def visit_ImportFrom(self, node):
         self.data.append(node.module)
-
-
-if __name__ == "__main__":
-    text = '''
-if False or False:
-    print(1)
-    '''
-    tree_ = ast.parse(text)
-    visitor = Visitor()
-    visitor.visit(tree_)
-    print(visitor.data)
-    print(1)

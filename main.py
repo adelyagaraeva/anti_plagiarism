@@ -1,9 +1,11 @@
 import argparse
 import os
-from itertools import product
-from backend.model import *
-from backend.metrics import *
+
 import pandas as pd
+
+from itertools import product
+from backend.metrics import *
+from backend.model import *
 
 
 def read_code(name):
@@ -22,9 +24,9 @@ def parse_arguments():
 
     parser.add_argument('-l', type=str, help='metrics for comparisons',
                         choices=['lev', 'jaro', 'dam-lev'], nargs=1)
-    parser.add_argument('-pandas', type=str, help='path to folder to save as pandas dataframe '
-                                                  '(recommended for folder comparisons). Optional '
-                                                  'if not specified, result is printed and is not saved',
+    parser.add_argument('-pandas', type=str, help='path to folder to save results as pandas dataframe '
+                                                  '(recommended for folder comparisons). '
+                                                  'If not specified, result is printed and is not saved',
                         required=False, nargs=1)
 
     args_ = parser.parse_args()
@@ -32,30 +34,40 @@ def parse_arguments():
 
 
 args, compare_type, pandas_convert = parse_arguments()
+anti_plag = Model()
+
 
 if len(args) > 2:
     raise ValueError("More than two arguments in files")
 
 parse_dir: bool = len(args) == 1
 files_to_compare = args if not parse_dir else [f'{args[0]}/{file}' for file in os.listdir(args[0])]
-files_pair = [pair for pair in product(files_to_compare, repeat=2) if pair[0] < pair[1]]
+
+
+files_pair = {(pair[0], pair[1]): (read_code(pair[0]), read_code(pair[1])) for pair in
+              product(files_to_compare, repeat=2) if pair[0] < pair[1]}
+
 parse_python: bool = all(file.endswith('.py') for file in files_to_compare)
 
-anti_plag = Model()
+if parse_python:
+    files_pair = {(pair[0], pair[1]): (Model.preprocessing(read_code(pair[0])), Model.preprocessing(read_code(pair[1])))
+                  for pair in product(files_to_compare, repeat=2) if pair[0] < pair[1]}
+else:
+    files_pair = {(pair[0], pair[1]): (read_code(pair[0]), read_code(pair[1])) for pair in
+                  product(files_to_compare, repeat=2) if pair[0] < pair[1]}
+
+
 results = {}
 
-for pair in files_pair:
-    if parse_python:
-        first = Model.preprocessing(read_code(pair[0]))
-        second = Model.preprocessing(read_code(pair[1]))
-        alphabet = {word: chr(40 + index) for index, word in enumerate(set(first).union(set(second)))}
 
+for (filename_1, filename_2), (file_1, file_2) in files_pair.items():
+    if parse_python:
+        alphabet = {word: chr(40 + index) for index, word in enumerate(set(file_1).union(set(file_2)))}
     else:
-        first, second = read_code(pair[0]), read_code(pair[1])
         alphabet = None
 
-    result = Model.predict(first, second, predicting_functions[compare_type[0]], alphabet)
-    results[(pair[0], pair[1])] = result
+    result = Model.predict(file_1, file_2, predicting_functions[compare_type[0]], alphabet)
+    results[(filename_1, filename_2)] = result
 
 
 if not parse_dir:
@@ -75,6 +87,5 @@ else:
             second.append(key[1].split('/')[-1])
             values.append(value)
 
-        pd.DataFrame({'first': first, 'second': second, f'{compare_type}_metrics': values}).to_csv(
+        pd.DataFrame({'first': first, 'second': second, f'{compare_type[0]}_metrics': values}).to_csv(
             f'{pandas_convert[0]}/results.csv', index=False)
-
