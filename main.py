@@ -4,7 +4,6 @@ import sys
 
 import pandas as pd
 from prettytable import PrettyTable
-from print_color import print as print_color
 from backend.model import *
 
 
@@ -17,7 +16,7 @@ def parse_arguments():
                                                            'or two python files (two paths to each file)')
 
     parser.add_argument('-m', type=str, help='metrics for comparisons',
-                        choices=['lev', 'jaro', 'dam-lev'], nargs='+')
+                        choices=predicting_functions.keys(), nargs='+')
     parser.add_argument('-pandas', type=str, help='path to folder to save results as pandas dataframe '
                                                   '(recommended for folder comparisons). '
                                                   'If not specified, result is printed and is not saved',
@@ -30,11 +29,14 @@ def parse_arguments():
     if 'dam-lev' in metrics:
         metrics.append('dam-lev-norm')
 
+    if not all(os.path.exists(file) for file in args_.input):
+        print_color('No such input path exists :(', color='red')
+        sys.exit(1)
+
     return args_.input, metrics, args_.pandas
 
 
 def save_to_pandas(results, metrics, pandas_convert):
-
     first, second = [], []
     values = {name: [] for name in metrics}
 
@@ -72,7 +74,8 @@ if len(args) > 2:
 
 parse_dir: bool = len(args) == 1
 try:
-    filenames_to_compare = args if not parse_dir else [f'{args[0]}/{file}' for file in os.listdir(args[0])]
+    filenames_to_compare = args if not parse_dir else [f'{args[0]}/{file}' for file in os.listdir(args[0])
+                                                       if os.path.isfile(f'{args[0]}/{file}')]
 except FileNotFoundError as e:
     print_color(e, color='red')
     sys.exit(1)
