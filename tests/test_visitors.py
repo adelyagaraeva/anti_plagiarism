@@ -111,3 +111,31 @@ def f(x):
     visitor.visit(tree_2)
 
     assert temp_tree == visitor.data
+
+
+def test_binop():
+    code_1 = '''
+if x > y:
+    print(2 + 2)
+    '''
+    code_2 = '''
+if x > y:
+    print(4)
+    '''
+
+    tree = ast.parse(code_1)
+    visitor = NodeSorting()
+    visitor.run(tree)
+    visitor = Visitor()
+    visitor.visit(tree)
+    temp_tree = visitor.data
+
+    tree_2 = ast.parse(code_2)
+    visitor = NodeSorting()
+    visitor.run(tree_2)
+    visitor = Visitor()
+    visitor.visit(tree_2)
+
+    assert temp_tree == visitor.data
+
+

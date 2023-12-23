@@ -32,7 +32,7 @@ class NodeSorting(ast.NodeVisitor):
 
 class Visitor(ast.NodeVisitor):
 
-    from backend.constants import builtin_functions, builtin_methods
+    from backend.constants import builtin_functions, builtin_methods, binary_operations
 
     def __init__(self):
         self.data = []
@@ -89,3 +89,13 @@ class Visitor(ast.NodeVisitor):
 
     def visit_ImportFrom(self, node):
         self.data.append(node.module)
+
+    def visit_BinOp(self, node):
+        if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
+            self.suspect += 1
+
+            left = node.left.value
+
+            function_to_use = getattr(left, self.binary_operations[node.op.__class__.__name__])
+
+            self.data.append(function_to_use(node.right.value))
