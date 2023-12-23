@@ -1,9 +1,9 @@
 import argparse
 import os
-import sys
 
 import pandas as pd
 from prettytable import PrettyTable
+
 from backend.model import *
 
 
@@ -48,7 +48,6 @@ def save_to_pandas(results, metrics, pandas_convert):
 
 
 def print_result(results, metrics):
-
     print_color(f'metrics increasing from plagiarism: '
                 f'{[metric for metric in metrics if metric in increasing_from_plagiarism]}', color='red')
 
@@ -63,27 +62,35 @@ def print_result(results, metrics):
     print(table)
 
 
-args, metrics, pandas_convert = parse_arguments()
+def get_filenames(file_paths):
+    parse_dir: bool = len(file_paths) == 1
+    try:
+        filenames_to_compare = file_paths if not parse_dir else \
+            [f'{file_paths[0]}/{file}' for file in os.listdir(file_paths[0]) if
+             os.path.isfile(f'{file_paths[0]}/{file}')]
+        parse_python: bool = all(file.endswith('.py') for file in filenames_to_compare)
 
-if len(args) > 2:
-    raise ValueError("More than two arguments in files")
+        if not parse_python and any(file.endswith('.py') for file in filenames_to_compare):
+            print_color('not all files in folder have extension .py, we compare them as pure strings', color='blue')
 
-parse_dir: bool = len(args) == 1
-try:
-    filenames_to_compare = args if not parse_dir else [f'{args[0]}/{file}' for file in os.listdir(args[0])
-                                                       if os.path.isfile(f'{args[0]}/{file}')]
-except FileNotFoundError as e:
-    print_color(e, color='red')
-    sys.exit(1)
+        return filenames_to_compare, parse_python
 
-parse_python: bool = all(file.endswith('.py') for file in filenames_to_compare)
-if not parse_python and any(file.endswith('.py') for file in filenames_to_compare):
-    print_color('not all files in folder have extension .py, we compare them as pure strings', color='blue')
+    except FileNotFoundError as e:
+        print_color(e, color='red')
+        sys.exit(1)
 
 
-model = Model(parse_python, metrics)
-results = model.compare_all_files(filenames_to_compare)
-print_result(results, metrics)
+if __name__ == "__main__":
+    file_paths, metrics, pandas_convert = parse_arguments()
 
-if pandas_convert:
-    save_to_pandas(results, metrics, pandas_convert)
+    if len(file_paths) > 2:
+        raise ValueError("More than two arguments in files")
+
+    filenames_to_compare, parse_python = get_filenames(file_paths)
+
+    model = Model(parse_python, metrics)
+    results = model.compare_all_files(filenames_to_compare)
+    print_result(results, metrics)
+
+    if pandas_convert:
+        save_to_pandas(results, metrics, pandas_convert)
