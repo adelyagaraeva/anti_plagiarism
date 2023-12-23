@@ -24,10 +24,6 @@ def parse_arguments():
 
     args_ = parser.parse_args()
     metrics = args_.m
-    if 'lev' in metrics:
-        metrics.append('lev-norm')
-    if 'dam-lev' in metrics:
-        metrics.append('dam-lev-norm')
 
     if not all(os.path.exists(file) for file in args_.input):
         print_color('No such input path exists :(', color='red')
@@ -81,6 +77,10 @@ except FileNotFoundError as e:
     sys.exit(1)
 
 parse_python: bool = all(file.endswith('.py') for file in filenames_to_compare)
+if not parse_python and any(file.endswith('.py') for file in filenames_to_compare):
+    print_color('not all files in folder have extension .py, we compare them as pure strings', color='blue')
+
+
 model = Model(parse_python, metrics)
 results = model.compare_all_files(filenames_to_compare)
 print_result(results, metrics)

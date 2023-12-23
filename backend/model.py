@@ -1,3 +1,5 @@
+import sys
+
 from backend.tree_visitors import *
 from backend.metrics import *
 from itertools import product
@@ -13,19 +15,22 @@ class Model:
     def __init__(self, parse_python, metrics: list):
         self.parse_python = parse_python
         self.metrics = metrics
+        self.suspects = {}
 
-    @staticmethod
-    def read_file(name):
+    def read_file(self, filename):
         """
         name: name of the file
+
         returns file as a string
-        if not possible to read, none is returned
+        if not possible to read and
+        we do not compare python files,
+        none is returned
         """
         try:
-            with open(name, mode='r', encoding='utf8') as f:
+            with open(filename, mode='r', encoding='utf8') as f:
                 file = f.read()
         except UnicodeDecodeError as e:
-            print_color(f'{e} in file {name}', color='red')
+            print_color(f'{e} in file {filename}', color='red')
             return None
 
         return file
@@ -40,7 +45,8 @@ class Model:
         """
 
         if self.parse_python:
-            files_to_compare = {filename: Model.preprocessing(self.read_file(filename)) for filename in filenames_to_compare}
+            files_to_compare = {filename: self.preprocessing(filename)
+                                for filename in filenames_to_compare}
         else:
             files_to_compare = {filename: self.read_file(filename) for filename in filenames_to_compare}
         files_to_compare = {filename: file for filename, file in files_to_compare.items() if file}
@@ -62,16 +68,26 @@ class Model:
 
         return results
 
-    @staticmethod
-    def preprocessing(code):
+    def preprocessing(self, filename):
         """
-        use node-visitors for getting a list from ast tree
+        filename: filename not file itself
 
+        use node-visitors for getting a list from ast tree
         first sort all nodes, so they are matched by their sizes
         """
+        code = self.read_file(filename)
+
+        if not code:
+            return None
+
         node_visitor = Visitor()
         node_sorter = NodeSorting()
-        tree = ast.parse(code)
+        try:
+            tree = ast.parse(code)
+        except SyntaxError as e:
+            print_color(f'{e} in file {filename}', color='red')
+            sys.exit(1)
+
         node_sorter.run(tree)
         node_visitor.generic_visit(tree)
 

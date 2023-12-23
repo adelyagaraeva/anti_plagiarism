@@ -14,6 +14,10 @@ class NodeSorting(ast.NodeVisitor):
             return 0
 
     def run(self, module):
+        """
+        sort main module based on size of each function and class
+        module is sorted in-place
+        """
         assert isinstance(module, ast.Module), "search must start from module"
         for functor in module.body:
             if not isinstance(functor, (ast.FunctionDef, ast.ClassDef)):
@@ -31,6 +35,9 @@ class NodeSorting(ast.NodeVisitor):
 
 
 class Visitor(ast.NodeVisitor):
+    """
+    visit each node using dfs
+    """
 
     from backend.constants import builtin_functions, builtin_methods, binary_operations
 
