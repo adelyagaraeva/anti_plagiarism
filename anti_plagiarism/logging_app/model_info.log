@@ -1,0 +1,42 @@
+2023-12-24 13:23:25.941139 run_function INFO Running the model
+2023-12-24 13:23:25.941139 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:23:25.941139 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:23:25.943014 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:23:25.943014 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:23:25.945274 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:37:32.968828 run_function INFO Running the model
+2023-12-24 13:37:32.976732 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:37:32.976921 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:37:33.060152 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:37:33.060152 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:37:33.112946 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:48:02.741242 run_function INFO Running the model
+2023-12-24 13:48:02.741242 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:48:02.741242 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:48:02.807566 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:48:02.807566 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:48:02.855079 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:48:45.449534 run_function INFO Running the model
+2023-12-24 13:48:45.449534 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:48:45.449534 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:48:45.507977 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:48:45.507977 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:48:45.558214 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:49:49.842864 run_function INFO Running the model
+2023-12-24 13:49:49.842864 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:49:49.844520 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:49:49.917201 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:49:49.917201 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:49:49.970740 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:58:14.988561 run_function INFO Running the model
+2023-12-24 13:58:14.988561 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:58:14.988561 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:58:15.067517 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:58:15.067517 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:58:15.114702 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
+2023-12-24 13:58:41.057672 run_function INFO Running the model
+2023-12-24 13:58:41.057672 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_d.py
+2023-12-24 13:58:41.057672 read_file_function INFO File examples/aisd4i/aisd4i_d.py has been read successfully
+2023-12-24 13:58:41.141067 preprocessing_function INFO Code preprocessing of examples/aisd4i/aisd4i_p.py
+2023-12-24 13:58:41.141067 read_file_function INFO File examples/aisd4i/aisd4i_p.py has been read successfully
+2023-12-24 13:58:41.183245 compare_function INFO Comparing files: dict_keys(['examples/aisd4i/aisd4i_d.py', 'examples/aisd4i/aisd4i_p.py'])
