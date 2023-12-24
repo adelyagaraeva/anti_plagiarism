@@ -23,13 +23,13 @@
 
 ## Как запускать:
 \- Чтобы получить вывод в консоль:
-\- path_to_the_first_file path_to_the_second_file -m metric_name 
-\- path_to_folder -m metric_name 
+  \- path_to_the_first_file path_to_the_second_file -m metric_name 
+  \- path_to_folder -m metric_name 
 
-\- Вывод в файл с расширением csv: path_to_the_first_file path_to_the_second_file -m metric name -pandas path_to_resul_file
-
-
-                                \- path_to_folder -m metric name -pandas path_to_resul_file
+\- Вывод в файл с расширением csv: 
+   \- path_to_the_first_file path_to_the_second_file -m metric name -pandas path_to_resul_file
+   \- path_to_folder -m metric name -pandas path_to_resul_file
 
                                 
-запуск приложения из консоли:   streamlit run path_to_file
+\- запуск приложения из консоли:   
+  \- streamlit run path_to_file
