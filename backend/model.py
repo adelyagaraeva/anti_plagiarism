@@ -15,7 +15,6 @@ class Model:
     def __init__(self, parse_python, metrics: list):
         self.parse_python = parse_python
         self.metrics = metrics
-        self.suspects = {}
 
     @staticmethod
     def read_file(filename):

@@ -43,7 +43,6 @@ class Visitor(ast.NodeVisitor):
 
     def __init__(self):
         self.data = []
-        self.suspect = 0
 
     def generic_visit(self, node):
         self.data.append(node.__class__.__name__)
@@ -55,14 +54,12 @@ class Visitor(ast.NodeVisitor):
         suspicion
         """
         if isinstance(node.test, ast.Constant):
-            self.suspect += 1
             return
         if isinstance(node.test, ast.BoolOp):
             for value in node.test.values:
                 if value.__class__ != ast.Constant:
                     break
             else:
-                self.suspect += 1
                 return
 
         self.data.append(node.__class__.__name__)
@@ -99,10 +96,8 @@ class Visitor(ast.NodeVisitor):
 
     def visit_BinOp(self, node):
         if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
-            self.suspect += 1
 
             left = node.left.value
-
             function_to_use = getattr(left, self.binary_operations[node.op.__class__.__name__])
 
             self.data.append(function_to_use(node.right.value))
