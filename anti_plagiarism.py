@@ -3,6 +3,8 @@ import os
 
 import pandas as pd
 from prettytable import PrettyTable
+from logging_app.logging_app import anti_plagiarism_logger
+
 
 from backend.model import *
 
@@ -21,18 +23,20 @@ def parse_arguments():
                                                   '(recommended for folder comparisons). '
                                                   'If not specified, result is printed and is not saved',
                         required=False, nargs=1)
-
     args_ = parser.parse_args()
+    anti_plagiarism_logger.info(f"Parsing arguments: files {args_.input}, metric {args_.m}")
     metrics = args_.m
 
     if not all(os.path.exists(file) for file in args_.input):
+        anti_plagiarism_logger.error(f"No such input path exists")
         print_color('No such input path exists :(', color='red')
         sys.exit(1)
-
+    anti_plagiarism_logger.info("Successful argument parsing")
     return args_.input, metrics, args_.pandas
 
 
 def give_pandas(results, metrics):
+    anti_plagiarism_logger.info("Creating pandas DataFrame")
     first, second = [], []
     values = {name: [] for name in metrics}
 
@@ -47,6 +51,7 @@ def give_pandas(results, metrics):
 
 
 def print_result(results, metrics):
+    anti_plagiarism_logger.info("Getting results of comparison")
     print_color(f'metrics increasing from plagiarism: '
                 f'{[metric for metric in metrics if metric in increasing_from_plagiarism]}', color='red')
 
@@ -62,6 +67,7 @@ def print_result(results, metrics):
 
 
 def get_filenames(file_paths):
+    anti_plagiarism_logger.info(f"Getting filenames from the following path {file_paths}")
     parse_dir: bool = len(file_paths) == 1
     try:
         filenames_to_compare = file_paths if not parse_dir else \
@@ -70,11 +76,13 @@ def get_filenames(file_paths):
         parse_python: bool = all(file.endswith('.py') for file in filenames_to_compare)
 
         if not parse_python and any(file.endswith('.py') for file in filenames_to_compare):
+            anti_plagiarism_logger.warning("not all files in folder have extension .py, we compare them as pure strings")
             print_color('not all files in folder have extension .py, we compare them as pure strings', color='blue')
 
         return filenames_to_compare, parse_python
 
     except FileNotFoundError as e:
+        anti_plagiarism_logger.error(f"no file was found in the {file_paths} path")
         print_color(e, color='red')
         sys.exit(1)
 
@@ -83,6 +91,7 @@ if __name__ == "__main__":
     file_paths, metrics, pandas_convert = parse_arguments()
 
     if len(file_paths) > 2:
+        anti_plagiarism_logger.error("More than two arguments in files")
         raise ValueError("More than two arguments in files")
 
     filenames_to_compare, parse_python = get_filenames(file_paths)

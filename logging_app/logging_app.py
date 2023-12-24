@@ -18,18 +18,27 @@ class CriticalAndErrorFilter(lg.Filter):
         return record.levelno >= lg.WARNING
 
 
-my_logger = lg.getLogger("logger")
-my_logger.setLevel(lg.DEBUG)
+def get_logger(name, error_file_path, info_file_path):
+    tmp_logger = lg.getLogger(name)
+    tmp_logger.setLevel(lg.DEBUG)
+    debug_and_info_handler = lg.FileHandler(info_file_path)
+    debug_and_info_handler.addFilter(DebugAndInfoFilter())
+    debug_and_info_handler.setLevel(lg.DEBUG)
+    debug_and_info_handler.setFormatter(MyFormatter())
+    critical_and_error_handler = lg.FileHandler(error_file_path)
+    critical_and_error_handler.addFilter(CriticalAndErrorFilter())
+    critical_and_error_handler.setLevel(lg.ERROR)
+    critical_and_error_handler.setFormatter(MyFormatter())
+    tmp_logger.addHandler(debug_and_info_handler)
+    tmp_logger.addHandler(critical_and_error_handler)
+    return tmp_logger
 
-debug_and_info_handler = lg.FileHandler("logging_app/info.log")
-debug_and_info_handler.addFilter(DebugAndInfoFilter())
-debug_and_info_handler.setLevel(lg.DEBUG)
-debug_and_info_handler.setFormatter(MyFormatter())
 
-critical_and_error_handler = lg.FileHandler("logging_app/мerrors.log")
-critical_and_error_handler.addFilter(CriticalAndErrorFilter())
-critical_and_error_handler.setLevel(lg.ERROR)
-critical_and_error_handler.setFormatter(MyFormatter())
-
-my_logger.addHandler(debug_and_info_handler)
-my_logger.addHandler(critical_and_error_handler)
+model_logger = get_logger("model_logger", "logging_app/model_errors.log", "logging_app/model_info.log")
+tree_visitors_logger = get_logger("tree_visitors_logger", "logging_app/tree_visitors_errors.log",
+                                  "logging_app/tree_visitors_info.log")
+anti_plagiarism_logger = get_logger("anti_plagiarism_logger", "logging_app/anti_plagiarism_errors.log",
+                                    "logging_app/anti_plagiarism_info.log")
+anti_plagiarism_streamlit_logger = get_logger("anti_plagiarism_streamlit_logger",
+                                              "logging_app/anti_plagiarism_streamlit_errors.log",
+                                              "logging_app/anti_plagiarism_streamlit_info.log")
