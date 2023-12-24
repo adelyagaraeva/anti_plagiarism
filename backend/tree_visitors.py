@@ -43,11 +43,15 @@ class Visitor(ast.NodeVisitor):
 
     from backend.constants import builtin_functions, builtin_methods, binary_operations
 
+    @staticmethod
+    def logging(node):
+        tree_visitors_logger.info(f"Visiting node: {node.__class__.__name__}")
+
     def __init__(self):
         self.data = []
 
     def generic_visit(self, node):
-        tree_visitors_logger.info(f"Visiting node: {node}")
+        self.logging()
         self.data.append(node.__class__.__name__)
         super().generic_visit(node)
 
@@ -56,7 +60,7 @@ class Visitor(ast.NodeVisitor):
         If statement consist only of constants, we increase
         suspicion
         """
-        tree_visitors_logger.info(f"Suspicious constants are found in the code, visiting node : {node}")
+        self.logging(node)
         if isinstance(node.test, ast.Constant):
             return
         if isinstance(node.test, ast.BoolOp):
@@ -70,13 +74,13 @@ class Visitor(ast.NodeVisitor):
         super().generic_visit(node)
 
     def visit_AnnAssign(self, node):
-        tree_visitors_logger.info(f"Annotated assignment is found in the code, visiting node : {node}")
+        self.logging(node)
         node.target = []
         self.data.append(ast.Assign.__name__)
         super().generic_visit(node)
 
     def visit_Constant(self, node):
-        tree_visitors_logger.info(f"Constant is found in the code, visiting node : {node}")
+        self.logging(node)
         if isinstance(node.value, bool):
             self.data.append(int(node.value))
         else:
@@ -84,7 +88,7 @@ class Visitor(ast.NodeVisitor):
         super().generic_visit(node)
 
     def visit_Call(self, node):
-        tree_visitors_logger.info(f"Function is found in the code, visiting node : {node}")
+        self.logging(node)
         if hasattr(node.func, 'id') and node.func.id in self.builtin_functions:
             self.data.append(node.func.id)
         elif hasattr(node.func, 'attr') and node.func.attr in self.builtin_methods:
@@ -95,16 +99,16 @@ class Visitor(ast.NodeVisitor):
         super().generic_visit(node)
 
     def visit_Import(self, node):
-        tree_visitors_logger.info(f"Import is found in the code, visiting node : {node}")
+        self.logging(node)
         for import_name in node.names:
             self.data.append(import_name.name)
 
     def visit_ImportFrom(self, node):
-        tree_visitors_logger.info(f"Import from is found in the code, visiting node : {node}")
+        self.logging(node)
         self.data.append(node.module)
 
     def visit_BinOp(self, node):
-        tree_visitors_logger.info(f"Binary operation is found in the code, visiting node : {node}")
+        self.logging(node)
         if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
             left = node.left.value
             function_to_use = getattr(left, self.binary_operations[node.op.__class__.__name__])

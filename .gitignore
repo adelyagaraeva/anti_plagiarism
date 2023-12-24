@@ -1,5 +1,5 @@
 .idea
-.results/*.csv
+.csv
 .ipynb_checkpoints
 .pytest_cache
 **/*.log
