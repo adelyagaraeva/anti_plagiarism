@@ -4,6 +4,7 @@ from backend.tree_visitors import *
 from backend.metrics import *
 from itertools import product
 from print_color import print as print_color
+from logging_app.logging_app import my_logger
 
 
 class Model:
@@ -15,9 +16,9 @@ class Model:
     def __init__(self, parse_python, metrics: list):
         self.parse_python = parse_python
         self.metrics = metrics
+        self.suspects = {}
 
-    @staticmethod
-    def read_file(filename):
+    def read_file(self, filename):
         """
         name: name of the file
 
@@ -30,9 +31,10 @@ class Model:
             with open(filename, mode='r', encoding='utf8') as f:
                 file = f.read()
         except UnicodeDecodeError as e:
-            print_color(f'{e} in file {filename}', color='red')
+            my_logger.error(f'{e} in {filename}')
+            print_color(f'{e} in {filename}', color='red')
             return None
-
+        my_logger.info(f"File {filename} has been read successfully")
         return file
 
     def run(self, filenames_to_compare):
@@ -45,6 +47,7 @@ class Model:
         return: dictionary with all metrics for all comparisons of type
         (filename1, filename2) : [results for all metrics]
         """
+        my_logger.info("Running the model")
         if self.parse_python:
             files_to_compare = {filename: self.preprocessing(filename)
                                 for filename in filenames_to_compare}
@@ -55,7 +58,7 @@ class Model:
         return self.compare(files_to_compare)
 
     def compare(self, files_to_compare: dict):
-
+        my_logger.info(f"Comparing files: {files_to_compare.keys()}")
         files_pair = [(pair[0], pair[1]) for pair in product(files_to_compare.keys(), repeat=2) if pair[0] < pair[1]]
         results = {}
 
@@ -79,6 +82,7 @@ class Model:
         use node-visitors for getting a list from ast tree
         first sort all nodes, so they are matched by their sizes
         """
+        my_logger.info(f"Code preprocessing of {filename}")
         code = self.read_file(filename)
 
         if not code:
@@ -87,7 +91,8 @@ class Model:
         try:
             return self.preprocessing_code(code)
         except SyntaxError as e:
-            print_color(f'{e} in file {filename}', color='red')
+            my_logger.error(f"{e} in {filename}")
+            print_color(f'{e} in {filename}', color='red')
             sys.exit(1)
 
     @staticmethod
@@ -103,10 +108,7 @@ class Model:
 
     @staticmethod
     def predict(code1, code2, metric, alphabet):
-        try:
-            if alphabet:
-                code1 = ''.join(alphabet[el] for el in code1)
-                code2 = ''.join(alphabet[el] for el in code2)
-            return metric(code1, code2)
-        except SyntaxError:
-            return 0
+        if alphabet:
+            code1 = ''.join(alphabet[el] for el in code1)
+            code2 = ''.join(alphabet[el] for el in code2)
+        return metric(code1, code2)

@@ -2,6 +2,7 @@ import streamlit as st
 from io import StringIO
 from anti_plagiarism import predicting_functions, Model, give_pandas
 from backend import model
+from backend.metrics import *
 
 st.set_page_config(page_title="Antiplagiarism checker", page_icon="👋", layout='wide')
 st.write('## Evaluation of metrics for comparison of two (python) files from the point of plagiarism')
@@ -28,6 +29,12 @@ if uploaded_file and metrics:
     results = model.compare(files)
     df = give_pandas(results, metrics)
 
+    st.write(f'metrics increasing from plagiarism: '
+                f'{[metric for metric in metrics if metric in increasing_from_plagiarism]}')
+
+    st.write(f'metrics decreasing from plagiarism: '
+                f'{[metric for metric in metrics if metric not in increasing_from_plagiarism]}')
+
     st.write("Results are: ")
     st.write(df)
 
@@ -38,7 +45,7 @@ if uploaded_file and metrics:
     csv = convert_df(df)
 
     st.download_button(
-        "Press to Download results",
+        "Press to download results",
         csv,
         "comparison.csv",
         "text/csv",

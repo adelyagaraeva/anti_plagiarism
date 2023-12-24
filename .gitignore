@@ -1,3 +1,5 @@
 .idea
-.results
+.results/**
 .ipynb_checkpoints
+.pytest_cache
+**/*.log
