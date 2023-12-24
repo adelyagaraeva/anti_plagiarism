@@ -32,7 +32,7 @@ def generate_array(x1, d1, a, c, m, l):
         x[i] = x[i - 1] + d[i - 1]
     # print(x)
     return x
-
+"""aaaa"""
 
 n, k = input().split()
 n = int(n)

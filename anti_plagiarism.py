@@ -32,7 +32,7 @@ def parse_arguments():
     return args_.input, metrics, args_.pandas
 
 
-def save_to_pandas(results, metrics, pandas_convert):
+def give_pandas(results, metrics):
     first, second = [], []
     values = {name: [] for name in metrics}
 
@@ -43,8 +43,7 @@ def save_to_pandas(results, metrics, pandas_convert):
         for metric, metric_value in zip(metrics, row_value):
             values[metric].append(metric_value)
 
-    pd.DataFrame({'first': first, 'second': second, **values}).to_csv(
-        pandas_convert[0], index=False)
+    return pd.DataFrame({'first': first, 'second': second, **values})
 
 
 def print_result(results, metrics):
@@ -89,8 +88,9 @@ if __name__ == "__main__":
     filenames_to_compare, parse_python = get_filenames(file_paths)
 
     model = Model(parse_python, metrics)
-    results = model.compare_all_files(filenames_to_compare)
+
+    results = model.run(filenames_to_compare)
     print_result(results, metrics)
 
     if pandas_convert:
-        save_to_pandas(results, metrics, pandas_convert)
+        give_pandas(results, metrics).to_csv(pandas_convert[0], index=False)
