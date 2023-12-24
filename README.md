@@ -6,6 +6,7 @@
     <img src="https://img.shields.io/badge/python-3.7+-green">
     <img src="https://img.shields.io/badge/license-MIT-green">
 </p>
+
 # anti_plagiarism
 ## Описание проекта:
 
@@ -17,24 +18,12 @@
 
 Программа выводит число от 0 до 1, которое имеет смысл вероятности или абсолютное значение выбранной метрики.
 
-(Добавить про графический интерфейс)
-
-
-## Задачи:
-
-Обучить модель 
-Реализовать парсер командной строки 
-(Ворсин Андрей)
-
-Собрать датасет 
-Написать программу для сравнения кода
-(Гараева Аделя)
+Для удобства мы реализовали веб-интерфейс, который позволит даже людям, далеким от сферы программирования,использовать нану систему антиплагиата.
 
 
 ## Как запускать:
-
-самый базовый вариант: examples -m lev jaro -pandas results/results.csv
-
-сначала идёт путь до папки (пути до файлов)
-после -m метрики для сравнения
-после -pandas (опционно) в какой файл сохранить результат
+Чтобы получить вывод в консоль: path_to_the_first_file path_to_the_second_file -m metric_name 
+                                path_to_folder -m metric_name 
+Вывод в файл с расширением csv: path_to_the_first_file path_to_the_second_file -m metric name -pandas path_to_resul_file
+                                path_to_folder -m metric name -pandas path_to_resul_file
+запуск приложения из консоли:   streamlit run path_to_file
