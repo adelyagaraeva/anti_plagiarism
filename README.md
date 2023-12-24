@@ -1,6 +1,14 @@
+<h2 align="center">
+    <img src="https://github.com/adelyagaraeva/anti_plagiarism/assets/146413113/262ae88c-b239-4ffd-b840-02ea78c13411" height="128px" width="128px">
+</h2>
+
+<p align="center">
+    <img src="https://img.shields.io/badge/python-3.7+-green">
+    <img src="https://img.shields.io/badge/license-MIT-green">
+</p>
 # anti_plagiarism
 ## Описание проекта:
-![image](https://github.com/adelyagaraeva/anti_plagiarism/assets/146413113/262ae88c-b239-4ffd-b840-02ea78c13411)
+
 
 Мы реализовали проект для определения степени похожести кодов и текстов и выявления академического плагиата.
 Запуск скрипта будет осуществляться через командную строку. Программа на вход получает два файла на языке python или папку с файлами для сравнения. При запуске есть возможность выбрать метрику, используемую для вычисления вероятности плагиата. Пользователю доступны: расстояние Левенштейна, Дамерау-Левенштейна и Джаро-Винкера.
