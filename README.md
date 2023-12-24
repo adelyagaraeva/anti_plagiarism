@@ -29,8 +29,6 @@
 \- Вывод в файл с расширением csv: <br>
  path_to_the_first_file path_to_the_second_file -m metric name -pandas path_to_resul_file <br>
  path_to_folder -m metric name -pandas path_to_resul_file <br>
-    
-
                                 
 \- запуск приложения из консоли:  <br>
-   streamlit run path_to_file
+ streamlit run path_to_file
