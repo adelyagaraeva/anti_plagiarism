@@ -51,7 +51,7 @@ class Visitor(ast.NodeVisitor):
         self.data = []
 
     def generic_visit(self, node):
-        self.logging()
+        self.logging(node)
         self.data.append(node.__class__.__name__)
         super().generic_visit(node)
 
