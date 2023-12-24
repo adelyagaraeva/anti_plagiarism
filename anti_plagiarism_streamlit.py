@@ -30,3 +30,17 @@ if uploaded_file and metrics:
 
     st.write("Results are: ")
     st.write(df)
+
+    @st.cache_data
+    def convert_df(df):
+        return df.to_csv(index=False).encode('utf-8')
+
+    csv = convert_df(df)
+
+    st.download_button(
+        "Press to Download results",
+        csv,
+        "comparison.csv",
+        "text/csv",
+        key='download-csv'
+    )

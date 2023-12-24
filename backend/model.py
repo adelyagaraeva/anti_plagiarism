@@ -17,7 +17,8 @@ class Model:
         self.metrics = metrics
         self.suspects = {}
 
-    def read_file(self, filename):
+    @staticmethod
+    def read_file(filename):
         """
         name: name of the file
 
