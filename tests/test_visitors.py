@@ -137,5 +137,3 @@ if x > y:
     visitor.visit(tree_2)
 
     assert temp_tree == visitor.data
-
-

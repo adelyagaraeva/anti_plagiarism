@@ -101,3 +101,6 @@ class Visitor(ast.NodeVisitor):
             function_to_use = getattr(left, self.binary_operations[node.op.__class__.__name__])
 
             self.data.append(function_to_use(node.right.value))
+        else:
+            self.data.append(node.__class__.__name__)
+            super().generic_visit(node)
