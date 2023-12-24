@@ -33,5 +33,4 @@
 
                                 
 \- запуск приложения из консоли:  <br>
-
    streamlit run path_to_file
